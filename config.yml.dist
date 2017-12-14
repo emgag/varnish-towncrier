@@ -1,0 +1,9 @@
+redis:
+  uri: redis://127.0.0.1:6379
+  #password: thepasswordifneeeded
+  subscribe:
+    - varnish.purge
+endpoint:
+  uri: http://127.0.0.1:8080/
+  xkeyheader: xkey
+  softxkeyheader: xkey-soft
