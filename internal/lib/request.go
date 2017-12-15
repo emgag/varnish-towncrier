@@ -1,4 +1,4 @@
-package app
+package lib
 
 import (
 	"encoding/json"
@@ -11,11 +11,12 @@ import (
 )
 
 type Request struct {
-	Command string   `json:"command"`
-	Host    string   `json:"host"`
-	Path    string   `json:"path"`
-	Pattern string   `json:"pattern"`
-	Tags    []string `json:"tags"`
+	Command    string   `json:"command"`
+	Expression string   `json:"expression"`
+	Host       string   `json:"host"`
+	Path       string   `json:"path"`
+	Pattern    string   `json:"pattern"`
+	Tags       []string `json:"tags"`
 }
 
 func (r *Request) Validate() (bool, error) {
@@ -31,6 +32,11 @@ func (r *Request) Validate() (bool, error) {
 
 	switch r.Command {
 	case "ban":
+		if r.Expression == "" {
+			messages = append(messages, "expression: missing")
+		}
+
+	case "ban.url":
 		if r.Pattern == "" {
 			messages = append(messages, "pattern: missing")
 		}
@@ -40,7 +46,7 @@ func (r *Request) Validate() (bool, error) {
 			messages = append(messages, "path: missing")
 		}
 
-	case "xkey", "softxkey":
+	case "xkey", "xkey.soft":
 		if len(r.Tags) == 0 {
 			messages = append(messages, "tags: missing")
 		}
@@ -105,10 +111,19 @@ func (rp *RequestProcessor) Send(req *Request) error {
 		targetURL.Path = req.Path
 
 		log.Printf("Purging path %s from %s", req.Path, req.Host)
+
 	case "ban":
 		httpReq.Method = "BAN"
-		targetURL.Path = "/" + req.Pattern
-		log.Printf("Banning pattern %s from %s", req.Pattern, req.Host)
+		targetURL.Path = "/"
+		httpReq.Header.Add("X-Ban-Expression", req.Expression)
+
+		log.Printf("Banning with expression %s", req.Expression)
+
+	case "ban.url":
+		httpReq.Method = "BAN"
+		targetURL.Path = req.Path
+
+		log.Printf("Banning URL %s from %s", req.Pattern, req.Host)
 
 	case "xkey":
 		for _, t := range req.Tags {
@@ -116,7 +131,8 @@ func (rp *RequestProcessor) Send(req *Request) error {
 		}
 
 		log.Printf("Purging tags %s from %s", strings.Join(req.Tags, ", "), req.Host)
-	case "softxkey":
+
+	case "xkey.soft":
 		for _, t := range req.Tags {
 			httpReq.Header.Add(rp.Config.Endpoint.SoftXkeyHeader, t)
 		}
