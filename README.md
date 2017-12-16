@@ -1,6 +1,6 @@
 # varnish-broadcast
 
-**WORK IN PROGRESS**: not ready yet.
+**WORK IN PROGRESS**: more or less feature complete, but not used in production yet.
 
 **varnish-broadcast** is designed to distribute cache invalidation requests to a fleet of
 [varnish](http://varnish-cache.org/) instances running in an dynamic environment (e.g. AWS Auto Scaling, Azure
@@ -39,8 +39,8 @@ The agent configuration is done using a YAML file (see [config.yml.dist]([config
 **endpoint** section:
 
 * uri: the HTTP endpoint of the varnish instance. 
-* xkeyheader: The header used to supply list of tags to purge using *xkey.purge()* 
-* softxkeyheader: The header used to supply list of tags to purge using *xkey.softpurge()*
+* xkeyheader: The header used to supply list of keys to purge using *xkey.purge()* 
+* softxkeyheader: The header used to supply list of keys to purge using *xkey.softpurge()*
  
 Example:
 
@@ -52,25 +52,45 @@ redis:
     - varnish.purge
 endpoint: 
   uri: http://127.0.0.1:8080/
-  xkeyheader: xkey
-  softxkeyheader: xkey-soft
+  xkeyheader: x-xkey
+  softxkeyheader: x-xkey-soft
 ```
 
 ### Usage
 
 ```
-TBD
+NAME:
+   varnish-broadcast - Distribute cache invalidation requests to a fleet of varnish instances.
+
+USAGE:
+   varnish-broadcast [global options] command [command options] [arguments...]
+
+VERSION:
+   0.1
+
+COMMANDS:
+     help, h  Shows a list of commands or help for one command
+   Agent:
+     listen  Listen for incoming invalidation requests
+   Client:
+     ban    Issue ban request to all registered instances
+     purge  Issue purge request to all registered instances
+     xkey   Invalidate selected surrogate keys on all registered instances
+
+GLOBAL OPTIONS:
+   --config FILE, -c FILE  Load configuration from FILE (default: "/etc/varnish-broadcast.yml")
+   --help, -h              show help
+   --version, -v           print the version
 ```
 
 Example:
 ```
-$ varnish-broadcast listen -config config.yml
+$ varnish-broadcast -c config.yml listen 
 2017/12/14 01:09:14 Connecting to redis...
 2017/12/14 01:09:14 Connected to redis://127.0.0.1:6379
 2017/12/14 01:09:14 subscribe: varnish.purge (1)
 [...]
 ```
-
 
 ## Invalidation request API
 
@@ -85,7 +105,7 @@ The publish message payload consists of a JSON object with following properties:
 * **host**: string. Required. The _Host_ header used in the PURGE/BAN request to varnish.
 * **path**: string. Required for _purge_ command. The path portion of the URL to be purged.
 * **pattern**: string. Required for _ban.url_. Regular expression matching the path portion of the URL to be banned.
-* **tags**: string[]. Required for _xkey_ and _xkey.soft_ commands. A list of tags to purge. 
+* **keys**: string[]. Required for _xkey_ and _xkey.soft_ commands. A list of keys to purge. 
 
 Example:
 
@@ -93,15 +113,21 @@ Example:
 {
    "command" : "xkey",
    "host" : "www.example.org",
-   "tags" : ["still", "flying"]
+   "keys" : ["still", "flying"]
 }
+```
+
+Using _varnish-broadcast_:
+
+```
+$ varnish-broadcast -c config.yml xkey --host www.example.org still flying
 ```
 
 Using _redis-cli_:
 
 ```
 $ redis-cli
-127.0.0.1:6379> publish varnish.purge '{"command": "xkey", "host": "www.example.org", "tags": ["still", "flying"]}'
+127.0.0.1:6379> publish varnish.purge '{"command": "xkey", "host": "www.example.org", "keys": ["still", "flying"]}'
 ```
 
 Using PHP & [Predis](https://github.com/nrk/predis):
@@ -116,7 +142,7 @@ $client = new Predis\Client([
 $message = json_encode([
     'command' => 'xkey',
     'host'    => 'www.example.org',
-    'tags'    => ['still', 'flying']
+    'keys'    => ['still', 'flying']
 ]);
 
 $client->publish('varnish.purge', $message);

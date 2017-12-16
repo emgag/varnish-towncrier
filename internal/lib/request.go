@@ -16,7 +16,7 @@ type Request struct {
 	Host       string   `json:"host"`
 	Path       string   `json:"path"`
 	Pattern    string   `json:"pattern"`
-	Tags       []string `json:"tags"`
+	Keys       []string `json:"keys"`
 }
 
 func (r *Request) Validate() (bool, error) {
@@ -47,8 +47,8 @@ func (r *Request) Validate() (bool, error) {
 		}
 
 	case "xkey", "xkey.soft":
-		if len(r.Tags) == 0 {
-			messages = append(messages, "tags: missing")
+		if len(r.Keys) == 0 {
+			messages = append(messages, "keys: missing")
 		}
 
 	default:
@@ -121,23 +121,23 @@ func (rp *RequestProcessor) Send(req *Request) error {
 
 	case "ban.url":
 		httpReq.Method = "BAN"
-		targetURL.Path = req.Path
+		targetURL.Path = "/" + req.Pattern
 
 		log.Printf("Banning URL %s from %s", req.Pattern, req.Host)
 
 	case "xkey":
-		for _, t := range req.Tags {
+		for _, t := range req.Keys {
 			httpReq.Header.Add(rp.Config.Endpoint.XkeyHeader, t)
 		}
 
-		log.Printf("Purging tags %s from %s", strings.Join(req.Tags, ", "), req.Host)
+		log.Printf("Purging tags %s from %s", strings.Join(req.Keys, ", "), req.Host)
 
 	case "xkey.soft":
-		for _, t := range req.Tags {
+		for _, t := range req.Keys {
 			httpReq.Header.Add(rp.Config.Endpoint.SoftXkeyHeader, t)
 		}
 
-		log.Printf("Soft-purging tags %s from %s", strings.Join(req.Tags, ", "), req.Host)
+		log.Printf("Soft-purging tags %s from %s", strings.Join(req.Keys, ", "), req.Host)
 	}
 
 	client := &http.Client{

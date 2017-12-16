@@ -21,23 +21,12 @@ func NewListener(options Options) *Listener {
 
 func (l *Listener) Listen() error {
 
-	var dialOptions []redis.DialOption
-	{
-		redis.DialConnectTimeout(5 * time.Second)
-		redis.DialReadTimeout(2 * time.Second)
-		redis.DialWriteTimeout(2 * time.Second)
-	}
-
-	if l.Options.Redis.Password != "" {
-		dialOptions = append(dialOptions, redis.DialPassword(l.Options.Redis.Password))
-	}
-
 	rp := NewRequestProcessor(l.Options)
 
 	for {
 		log.Printf("Connecting to redis...")
 
-		c, err := redis.DialURL(l.Options.Redis.Uri, dialOptions...)
+		c, err := NewRedisConn(l.Options)
 
 		if err != nil {
 			time.Sleep(5 * time.Second)
