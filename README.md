@@ -1,5 +1,6 @@
 # varnish-broadcast
 
+[![Build Status](https://travis-ci.org/emgag/varnish-broadcast.svg?branch=master)](https://travis-ci.org/emgag/varnish-broadcast)
 [![Go Report Card](https://goreportcard.com/badge/github.com/emgag/varnish-broadcast)](https://goreportcard.com/report/github.com/emgag/varnish-broadcast)
 
 **WORK IN PROGRESS**: more or less feature complete, but not used in production yet.
@@ -61,33 +62,29 @@ endpoint:
 ### Usage
 
 ```
-NAME:
-   varnish-broadcast - Distribute cache invalidation requests to a fleet of varnish instances.
+Distribute cache invalidation requests to a fleet of varnish instances.
 
-USAGE:
-   varnish-broadcast [global options] command [command options] [arguments...]
+Usage:
+  varnish-broadcast [command]
 
-VERSION:
-   0.1
+Available Commands:
+  ban         Issue ban request to all registered instances
+  help        Help about any command
+  listen      Listen for incoming invalidation requests
+  purge       Issue purge request to all registered instances
+  version     Print the version number of varnish-broadcast
+  xkey        Invalidate selected surrogate keys on all registered instances
 
-COMMANDS:
-     help, h  Shows a list of commands or help for one command
-   Agent:
-     listen  Listen for incoming invalidation requests
-   Client:
-     ban    Issue ban request to all registered instances
-     purge  Issue purge request to all registered instances
-     xkey   Invalidate selected surrogate keys on all registered instances
+Flags:
+  -c, --config string   config file (default is /etc/varnish-broadcast.yml)
+  -h, --help            help for varnish-broadcast
 
-GLOBAL OPTIONS:
-   --config FILE, -c FILE  Load configuration from FILE (default: "/etc/varnish-broadcast.yml")
-   --help, -h              show help
-   --version, -v           print the version
+Use "varnish-broadcast [command] --help" for more information about a command.
 ```
 
 Example:
 ```
-$ varnish-broadcast -c config.yml listen 
+$ varnish-broadcast -c varnish-broadcast.yml listen 
 2017/12/14 01:09:14 Connecting to redis...
 2017/12/14 01:09:14 Connected to redis://127.0.0.1:6379
 2017/12/14 01:09:14 subscribe: varnish.purge (1)
