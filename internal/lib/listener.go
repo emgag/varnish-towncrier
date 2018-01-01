@@ -8,17 +8,12 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
+// Listener is used to connect to redis pubsub and listen for incoming requests
 type Listener struct {
 	Options Options
 }
 
-func NewListener(options Options) *Listener {
-	l := Listener{}
-	l.Options = options
-
-	return &l
-}
-
+// Listen starts listening for incoming requests
 func (l *Listener) Listen() error {
 
 	rp := NewRequestProcessor(l.Options)
@@ -35,7 +30,7 @@ func (l *Listener) Listen() error {
 
 		defer c.Close()
 
-		log.Printf("Connected to %s", l.Options.Redis.Uri)
+		log.Printf("Connected to %s", l.Options.Redis.URI)
 
 		psc := redis.PubSubConn{Conn: c}
 		psc.Subscribe(redis.Args{}.AddFlat(l.Options.Redis.Subscribe)...)
@@ -62,4 +57,12 @@ func (l *Listener) Listen() error {
 		}
 	}
 
+}
+
+// NewListener creates a new Listener instance
+func NewListener(options Options) *Listener {
+	l := Listener{}
+	l.Options = options
+
+	return &l
 }

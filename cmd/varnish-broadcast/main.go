@@ -82,7 +82,7 @@ func main() {
 					messages = append(messages, "expression is required")
 				}
 
-				if (len(messages) > 0) {
+				if len(messages) > 0 {
 					fmt.Printf("%s\n\n", strings.Join(messages, ", "))
 					return errors.New(strings.Join(messages, ", "))
 				}
@@ -139,7 +139,7 @@ func main() {
 					messages = append(messages, "path is required")
 				}
 
-				if (len(messages) > 0) {
+				if len(messages) > 0 {
 					fmt.Printf("%s\n\n", strings.Join(messages, ", "))
 					return errors.New(strings.Join(messages, ", "))
 				}
@@ -195,7 +195,7 @@ func main() {
 					messages = append(messages, "keys are required")
 				}
 
-				if (len(messages) > 0) {
+				if len(messages) > 0 {
 					fmt.Printf("%s\n\n", strings.Join(messages, ", "))
 					return errors.New(strings.Join(messages, ", "))
 				}

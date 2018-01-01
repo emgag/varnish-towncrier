@@ -6,19 +6,21 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Options contains all settings read from the configuration file
 type Options struct {
 	Redis struct {
-		Uri       string   `yaml:"uri"`
-		Password  string   `yaml:"password",omitempty`
+		URI       string   `yaml:"uri"`
+		Password  string   `yaml:"password,omitempty"`
 		Subscribe []string `yaml:"subscribe"`
 	}
 	Endpoint struct {
-		Uri            string `yaml:"uri"`
+		URI            string `yaml:"uri"`
 		XkeyHeader     string `yaml:"xkeyheader"`
-		SoftXkeyHeader string `yaml:"softxkeyheader",`
+		SoftXkeyHeader string `yaml:"softxkeyheader"`
 	}
 }
 
+// LoadConfig loads settings from the configuration file
 func LoadConfig(Filename string) (Options, error) {
 	options := Options{}
 
