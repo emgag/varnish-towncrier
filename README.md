@@ -1,5 +1,7 @@
 # varnish-broadcast
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/emgag/varnish-broadcast)](https://goreportcard.com/report/github.com/emgag/varnish-broadcast)
+
 **WORK IN PROGRESS**: more or less feature complete, but not used in production yet.
 
 **varnish-broadcast** is designed to distribute cache invalidation requests to a fleet of
