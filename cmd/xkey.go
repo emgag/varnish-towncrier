@@ -28,7 +28,7 @@ var xkeyCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		hostname, _ := cmd.Flags().GetString("hostname")
+		host, _ := cmd.Flags().GetString("host")
 		channels := []string{}
 
 		if publishChannel, _ := cmd.Flags().GetString("channel"); publishChannel != "" {
@@ -46,7 +46,7 @@ var xkeyCmd = &cobra.Command{
 			xkeyFunc = client.Xkey
 		}
 
-		if err := xkeyFunc(channels, hostname, args); err != nil {
+		if err := xkeyFunc(channels, host, args); err != nil {
 			log.Fatalf("Error connecting to redis: %s", err)
 		}
 

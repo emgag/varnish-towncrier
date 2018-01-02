@@ -27,7 +27,7 @@ var purgeCommand = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		hostname, _ := cmd.Flags().GetString("hostname")
+		host, _ := cmd.Flags().GetString("host")
 		channels := []string{}
 
 		if publishChannel, _ := cmd.Flags().GetString("channel"); publishChannel != "" {
@@ -39,7 +39,7 @@ var purgeCommand = &cobra.Command{
 		client := lib.NewClient(options)
 
 		for _, path := range args {
-			if err := client.Purge(channels, hostname, path); err != nil {
+			if err := client.Purge(channels, host, path); err != nil {
 				log.Fatalf("Error connecting to redis: %s", err)
 			}
 		}

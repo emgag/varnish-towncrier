@@ -28,7 +28,7 @@ var banCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		hostname, _ := cmd.Flags().GetString("hostname")
+		host, _ := cmd.Flags().GetString("host")
 		channels := []string{}
 
 		if publishChannel, _ := cmd.Flags().GetString("channel"); publishChannel != "" {
@@ -47,7 +47,7 @@ var banCmd = &cobra.Command{
 		}
 
 		for _, expression := range args {
-			if err := banFunc(channels, hostname, expression); err != nil {
+			if err := banFunc(channels, host, expression); err != nil {
 				log.Fatalf("Error connecting to redis: %s", err)
 			}
 		}
