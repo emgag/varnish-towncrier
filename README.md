@@ -30,7 +30,7 @@ It supports PURGE and BAN requests as well as surrogate keys (cache tags) using 
 
 ### Configuration
 
-The agent configuration is done using a YAML file (see [config.yml.dist]([config.yml.dist])), default location is
+The agent configuration is done using a YAML file (see [varnish-broadcast.yml.dist]([varnish-broadcast.yml.dist])), default location is
 */etc/varnish-broadcast.yml*.
 
 **redis** section:
@@ -100,11 +100,12 @@ Invalidation requests can be sent by publishing to a [Redis Pub/Sub](https://red
 The publish message payload consists of a JSON object with following properties:
 
 * **command**: string. Required. Either _ban_, _ban.url_, _purge_, _xkey_ or _xkey.soft_.
-* **expression**: string. Required for _ban_. A [ban() expression](https://varnish-cache.org/docs/5.2/reference/vcl.html#vcl-7-ban).
 * **host**: string. Required. The _Host_ header used in the PURGE/BAN request to varnish.
-* **path**: string. Required for _purge_ command. The path portion of the URL to be purged.
-* **pattern**: string. Required for _ban.url_. Regular expression matching the path portion of the URL to be banned.
-* **keys**: string[]. Required for _xkey_ and _xkey.soft_ commands. A list of keys to purge. 
+* **value**: string[]. Required. Meaning depends on the command.
+_ban_: List of [ban() expressions](https://varnish-cache.org/docs/5.2/reference/vcl.html#vcl-7-ban), 
+_ban.url_: List of regular expressions matching the path portion of the URL to be banned,
+_purge_: The path portion of the URL to be purged,
+_xkey_ and _xkey.soft_: List of keys to (soft-)purge.
 
 Example:
 
@@ -112,7 +113,7 @@ Example:
 {
    "command" : "xkey",
    "host" : "www.example.org",
-   "keys" : ["still", "flying"]
+   "value" : ["still", "flying"]
 }
 ```
 
@@ -126,7 +127,7 @@ Using _redis-cli_:
 
 ```
 $ redis-cli
-127.0.0.1:6379> publish varnish.purge '{"command": "xkey", "host": "www.example.org", "keys": ["still", "flying"]}'
+127.0.0.1:6379> publish varnish.purge '{"command": "xkey", "host": "www.example.org", "value": ["still", "flying"]}'
 ```
 
 Using PHP & [Predis](https://github.com/nrk/predis):
@@ -141,7 +142,7 @@ $client = new Predis\Client([
 $message = json_encode([
     'command' => 'xkey',
     'host'    => 'www.example.org',
-    'keys'    => ['still', 'flying']
+    'value'   => ['still', 'flying']
 ]);
 
 $client->publish('varnish.purge', $message);
@@ -193,15 +194,18 @@ sub vcl_recv {
         
         if (req.http.x-ban-expression) {
             ban(req.http.x-ban-expression)
-        } else {
-            # remove leading /
+            return(synth(200, "Banned expression"));
+        
+        } else if (req.http.x-ban-url) {
             ban(
                 "obj.http.host == " + req.http.host + " && " +
-                "obj.http.url ~ " + regsub(req.url, "^/", "")
-            )        
+                "obj.http.url ~ " + req.http.x-ban-url
+            )
+            
+            return(synth(200, "Banned expression"));
         }
-
-        return(synth(200, "Banned"));
+        
+        return(synth(400, "No bans"));        
     }
 
     [...]
@@ -231,7 +235,15 @@ sub vcl_deliver {
 
 ## Build
 
-TBD
+On Linux:
+
+```
+$ mkdir varnish-broadcast && cd varnish-broadcast
+$ export GOPATH=$PWD
+$ go get github.com/emgag/varnish-broadcast
+```
+
+will download the source and builds binary called _varnish-broadcast_ in $GOPATH/bin.
 
 ## License
 

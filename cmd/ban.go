@@ -38,7 +38,7 @@ var banCmd = &cobra.Command{
 		}
 
 		client := lib.NewClient(options)
-		var banFunc func([]string, string, string) error
+		var banFunc func([]string, string, []string) error
 
 		if ret, _ := cmd.Flags().GetBool("url"); ret {
 			banFunc = client.BanURL
@@ -46,11 +46,8 @@ var banCmd = &cobra.Command{
 			banFunc = client.Ban
 		}
 
-		for _, expression := range args {
-			if err := banFunc(channels, host, expression); err != nil {
-				log.Fatalf("Error connecting to redis: %s", err)
-			}
+		if err := banFunc(channels, host, args); err != nil {
+			log.Fatalf("Error connecting to redis: %s", err)
 		}
-
 	},
 }

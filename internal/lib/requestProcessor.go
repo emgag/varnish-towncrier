@@ -41,49 +41,76 @@ func (rp *RequestProcessor) Send(req *Request) error {
 	httpReq.Header = make(http.Header)
 	httpReq.URL = targetURL
 
-	switch req.Command {
-	case "purge":
-		targetURL.Path = req.Path
-
-		log.Printf("Purging path %s from %s", req.Path, req.Host)
-
-	case "ban":
-		httpReq.Method = "BAN"
-		targetURL.Path = "/"
-		httpReq.Header.Add("X-Ban-Expression", req.Expression)
-
-		log.Printf("Banning with expression %s", req.Expression)
-
-	case "ban.url":
-		httpReq.Method = "BAN"
-		targetURL.Path = "/" + req.Pattern
-
-		log.Printf("Banning URL %s from %s", req.Pattern, req.Host)
-
-	case "xkey":
-		for _, t := range req.Keys {
-			httpReq.Header.Add(rp.Config.Endpoint.XkeyHeader, t)
-		}
-
-		log.Printf("Purging tags %s from %s", strings.Join(req.Keys, ", "), req.Host)
-
-	case "xkey.soft":
-		for _, t := range req.Keys {
-			httpReq.Header.Add(rp.Config.Endpoint.SoftXkeyHeader, t)
-		}
-
-		log.Printf("Soft-purging tags %s from %s", strings.Join(req.Keys, ", "), req.Host)
-	}
-
 	client := &http.Client{
 		Timeout: time.Second * 5,
 	}
 
-	_, err = client.Do(httpReq)
+	// xkey and xkey.soft commands allow submitting multiple values (surrogate keys) in a single request,
+	// ban, ban.url and purge need to issue multiple http requests.
+	switch req.Command {
+	case "purge":
+		for _, path := range req.Value {
+			targetURL.Path = path
 
-	if err != nil {
-		log.Printf("Sending request failed: %v", err)
-		return err
+			log.Printf("Purging path %s from %s", path, req.Host)
+
+			_, err = client.Do(httpReq)
+
+			if err != nil {
+				log.Printf("Sending request failed: %v", err)
+				return err
+			}
+		}
+
+	case "ban":
+		fallthrough
+	case "ban.url":
+
+		headerMap := map[string]struct {
+			Header string
+			Status string
+		}{
+			"ban":     {"X-Ban-Expression", "Banning with expression"},
+			"ban.url": {"X-Ban-URL", "Banning URL"},
+		}
+
+		httpReq.Method = "BAN"
+
+		for _, expression := range req.Value {
+			httpReq.Header.Set(headerMap[req.Command].Header, expression)
+
+			log.Printf("%s %s from %s", headerMap[req.Command].Status, expression, req.Host)
+
+			_, err = client.Do(httpReq)
+
+			if err != nil {
+				log.Printf("Sending request failed: %v", err)
+				return err
+			}
+		}
+
+	case "xkey":
+		fallthrough
+	case "xkey.soft":
+		headerMap := map[string]struct {
+			Header string
+			Status string
+		}{
+			"xkey":      {rp.Config.Endpoint.SoftXkeyHeader, "Purging"},
+			"xkey.soft": {rp.Config.Endpoint.XkeyHeader, "Soft-Purging"},
+		}
+
+		for _, t := range req.Value {
+			httpReq.Header.Add(headerMap[req.Command].Header, t)
+		}
+
+		log.Printf("%s tags %s from %s", headerMap[req.Command].Status, strings.Join(req.Value, ", "), req.Host)
+		_, err = client.Do(httpReq)
+
+		if err != nil {
+			log.Printf("Sending request failed: %v", err)
+			return err
+		}
 	}
 
 	return nil

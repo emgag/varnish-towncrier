@@ -6,14 +6,19 @@ import (
 	"strings"
 )
 
+var validCommands = map[string]bool{
+	"ban":       true,
+	"ban.url":   true,
+	"purge":     true,
+	"xkey":      true,
+	"xkey.soft": true,
+}
+
 // Request contains the purge message received from or sent to redis
 type Request struct {
-	Command    string   `json:"command"`
-	Expression string   `json:"expression"`
-	Host       string   `json:"host"`
-	Path       string   `json:"path"`
-	Pattern    string   `json:"pattern"`
-	Keys       []string `json:"keys"`
+	Host    string   `json:"host"`
+	Command string   `json:"command"`
+	Value   []string `json:"value"`
 }
 
 // Validate validates the request
@@ -22,35 +27,16 @@ func (r *Request) Validate() (bool, error) {
 
 	if r.Command == "" {
 		messages = append(messages, "command: missing")
+	} else if !validCommands[r.Command] {
+		messages = append(messages, "Unknown command: "+r.Command)
 	}
 
 	if r.Host == "" {
 		messages = append(messages, "host: missing")
 	}
 
-	switch r.Command {
-	case "ban":
-		if r.Expression == "" {
-			messages = append(messages, "expression: missing")
-		}
-
-	case "ban.url":
-		if r.Pattern == "" {
-			messages = append(messages, "pattern: missing")
-		}
-
-	case "purge":
-		if r.Path == "" {
-			messages = append(messages, "path: missing")
-		}
-
-	case "xkey", "xkey.soft":
-		if len(r.Keys) == 0 {
-			messages = append(messages, "keys: missing")
-		}
-
-	default:
-		messages = append(messages, "Unknown command: "+r.Command)
+	if len(r.Value) == 0 {
+		messages = append(messages, "value: empty")
 	}
 
 	if len(messages) > 0 {
