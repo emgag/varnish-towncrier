@@ -202,7 +202,7 @@ sub vcl_recv {
                 "obj.http.url ~ " + req.http.x-ban-url
             )
             
-            return(synth(200, "Banned expression"));
+            return(synth(200, "Banned URL"));
         }
         
         return(synth(400, "No bans"));        
