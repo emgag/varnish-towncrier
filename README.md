@@ -148,6 +148,18 @@ $message = json_encode([
 $client->publish('varnish.purge', $message);
 ```
 
+Using PHP, [Predis](https://github.com/nrk/predis) & [varnish-broadcast-php](https://github.com/emgag/varnish-broadcast-php):
+
+```PHP
+$client = new Predis\Client([
+    'scheme' => 'tcp',
+    'host'   => '127.0.0.1',
+    'port'   => '6379'
+]);
+
+$vb = new VarnishBroadcast($client);
+$vb->xkey('example.org', ['still', 'flying']);
+```
 
 ## VCL example
 
