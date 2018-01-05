@@ -4,3 +4,5 @@ go:
  - 1.x
  - 1.9
  - master
+
+script: make test

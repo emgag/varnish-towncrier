@@ -240,7 +240,9 @@ On Linux:
 ```
 $ mkdir varnish-broadcast && cd varnish-broadcast
 $ export GOPATH=$PWD
-$ go get github.com/emgag/varnish-broadcast
+$ go get -d github.com/emgag/varnish-broadcast
+$ cd src/github.com/emgag/varnish-broadcast
+$ make install
 ```
 
 will download the source and builds binary called _varnish-broadcast_ in $GOPATH/bin.
