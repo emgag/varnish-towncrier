@@ -24,8 +24,11 @@ lint:
 		golint $$file ; \
 	done
 
+fmt:
+	@gofmt -l -w -s ${GO_FILES}
+
 run: build
-	./${OUT}
+	./${OUT} listen
 
 clean:
 	-@rm ${OUT}
