@@ -7,3 +7,5 @@ endpoint:
   uri: http://127.0.0.1:8080/
   xkeyheader: xkey
   softxkeyheader: xkey-soft
+  banheader: x-ban-expression
+  banurlheader: x-ban-url

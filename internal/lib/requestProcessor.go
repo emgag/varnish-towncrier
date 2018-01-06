@@ -71,8 +71,8 @@ func (rp *RequestProcessor) Send(req *Request) error {
 			Header string
 			Status string
 		}{
-			"ban":     {"X-Ban-Expression", "Banning with expression"},
-			"ban.url": {"X-Ban-URL", "Banning URL"},
+			"ban":     {rp.Config.Endpoint.BanHeader, "Banning with expression"},
+			"ban.url": {rp.Config.Endpoint.BanURLHeader, "Banning URL"},
 		}
 
 		httpReq.Method = "BAN"

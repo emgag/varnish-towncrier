@@ -44,6 +44,8 @@ The agent configuration is done using a YAML file (see [varnish-broadcast.yml.di
 * uri: the HTTP endpoint of the varnish instance. 
 * xkeyheader: The header used to supply list of keys to purge using *xkey.purge()* 
 * softxkeyheader: The header used to supply list of keys to purge using *xkey.softpurge()*
+* banheader: The header used to supply the expression for *ban()*
+* banurlheader: The header used to supply the pattern for an URL ban 
  
 Example:
 
@@ -57,6 +59,8 @@ endpoint:
   uri: http://127.0.0.1:8080/
   xkeyheader: x-xkey
   softxkeyheader: x-xkey-soft
+  banheader: x-ban-expression
+  banurlheader: x-ban-url  
 ```
 
 ### Usage

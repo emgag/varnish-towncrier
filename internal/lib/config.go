@@ -11,5 +11,7 @@ type Options struct {
 		URI            string
 		XkeyHeader     string
 		SoftXkeyHeader string
+		BanHeader      string
+		BanURLHeader   string
 	}
 }

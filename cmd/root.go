@@ -38,6 +38,8 @@ func initConfig() {
 	viper.SetDefault("endpoint.uri", "http://127.0.0.1:8080/")
 	viper.SetDefault("endpoint.xkeyheader", "x-xkey")
 	viper.SetDefault("endpoint.softxkeyheader", "x-xkey-soft")
+	viper.SetDefault("endpoint.banheader", "x-ban-expression")
+	viper.SetDefault("endpoint.banurlheader", "x-ban-url")
 
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
