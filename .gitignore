@@ -16,5 +16,5 @@
 .idea/**/uiDesigner.xml
 
 # local
-config.yml
+varnish-broadcast.yml
 varnish-broadcast
