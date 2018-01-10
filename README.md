@@ -209,14 +209,14 @@ sub vcl_recv {
         }
         
         if (req.http.x-ban-expression) {
-            ban(req.http.x-ban-expression)
+            ban(req.http.x-ban-expression);
             return(synth(200, "Banned expression"));
         
         } else if (req.http.x-ban-url) {
             ban(
                 "obj.http.host == " + req.http.host + " && " +
                 "obj.http.url ~ " + req.http.x-ban-url
-            )
+            );
             
             return(synth(200, "Banned URL"));
         }
