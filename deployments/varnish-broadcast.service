@@ -1,0 +1,12 @@
+[Unit]
+Description=varnish-broadcast daemon
+After=varnishd.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/varnish-broadcast listen
+Restart=always
+RestartSec=1s
+
+[Install]
+WantedBy=multi-user.target
