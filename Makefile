@@ -1,7 +1,7 @@
 .PHONY: build run vet lint
 OUT := varnish-broadcast
 PKG := github.com/emgag/varnish-broadcast
-VERSION := $(shell git describe --always --long --dirty)
+VERSION := $(shell git describe --always --dirty --tags --long)
 PKG_LIST := $(shell go list ${PKG}/... | grep -v /vendor/)
 GO_FILES := $(shell find . -name '*.go' | grep -v /vendor/)
 
