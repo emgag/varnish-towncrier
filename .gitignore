@@ -16,5 +16,5 @@
 .idea/**/uiDesigner.xml
 
 # local
-varnish-broadcast.yml
-varnish-broadcast
+varnish-towncrier.yml
+varnish-towncrier

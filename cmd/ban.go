@@ -3,7 +3,7 @@ package cmd
 import (
 	"log"
 
-	"github.com/emgag/varnish-broadcast/internal/lib"
+	"github.com/emgag/varnish-towncrier/internal/lib"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

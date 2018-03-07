@@ -39,7 +39,7 @@ func (rp *RequestProcessor) Send(req *Request) error {
 	httpReq.Method = "PURGE"
 	httpReq.Host = req.Host
 	httpReq.Header = make(http.Header)
-	httpReq.Header.Set("User-Agent", "varnish-broadcast/"+Version)
+	httpReq.Header.Set("User-Agent", "varnish-towncrier/"+Version)
 	httpReq.URL = targetURL
 
 	client := &http.Client{

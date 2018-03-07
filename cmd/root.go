@@ -10,7 +10,7 @@ import (
 var cfgFile string
 
 var rootCmd = &cobra.Command{
-	Use:   "varnish-broadcast",
+	Use:   "varnish-towncrier",
 	Short: "Distribute cache invalidation requests to a fleet of varnish instances.",
 }
 
@@ -23,12 +23,12 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is /etc/varnish-broadcast.yml)")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is /etc/varnish-towncrier.yml)")
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	viper.SetConfigName("varnish-broadcast")
+	viper.SetConfigName("varnish-towncrier")
 
 	// set defaults for redis
 	viper.SetDefault("redis.uri", "redis://127.0.0.1:6379")
@@ -45,7 +45,7 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		viper.AddConfigPath("/etc")
-		viper.AddConfigPath("$HOME/.varnish-broadcast")
+		viper.AddConfigPath("$HOME/.varnish-towncrier")
 		viper.AddConfigPath(".")
 	}
 

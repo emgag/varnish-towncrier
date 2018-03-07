@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/emgag/varnish-broadcast/internal/lib"
+	"github.com/emgag/varnish-towncrier/internal/lib"
 	"github.com/spf13/cobra"
 )
 
@@ -13,8 +13,8 @@ func init() {
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print the version number of varnish-broadcast",
+	Short: "Print the version number of varnish-towncrier",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("varnish-broadcast -- %s\n", lib.Version)
+		fmt.Printf("varnish-towncrier -- %s\n", lib.Version)
 	},
 }

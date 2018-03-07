@@ -1,17 +1,17 @@
-# varnish-broadcast
+# varnish-towncrier
 
-[![Build Status](https://travis-ci.org/emgag/varnish-broadcast.svg?branch=master)](https://travis-ci.org/emgag/varnish-broadcast)
-[![Go Report Card](https://goreportcard.com/badge/github.com/emgag/varnish-broadcast)](https://goreportcard.com/report/github.com/emgag/varnish-broadcast)
+[![Build Status](https://travis-ci.org/emgag/varnish-towncrier.svg?branch=master)](https://travis-ci.org/emgag/varnish-towncrier)
+[![Go Report Card](https://goreportcard.com/badge/github.com/emgag/varnish-towncrier)](https://goreportcard.com/report/github.com/emgag/varnish-towncrier)
 
 **WORK IN PROGRESS**: more or less feature complete, but not used in production yet.
 
-**varnish-broadcast** is designed to distribute cache invalidation requests to a fleet of
+**varnish-towncrier** is designed to distribute cache invalidation requests to a fleet of
 [varnish](http://varnish-cache.org/) instances running in an dynamic environment (e.g. AWS Auto Scaling, Azure
 Autoscale). The agent daemon is listening for PURGE and BAN requests on a [Redis
 Pub/Sub](https://redis.io/topics/pubsub) channel and forwards incoming cache invalidation requests to its local varnish
 instance. It's the successor of [varnish-cache-reaper](https://github.com/emgag/varnish-cache-reaper), which is also
 used to fan out invalidation requests to multiple varnish instances, though its host list is static while with
-varnish-broadcast, each varnish instance registers itself automatically.
+varnish-towncrier, each varnish instance registers itself automatically.
 
 It supports PURGE and BAN requests as well as surrogate keys (cache tags) using the 
 [xkey module](https://github.com/varnish/varnish-modules/blob/master/docs/vmod_xkey.rst), formerly known as Hashtwo.
@@ -24,14 +24,14 @@ It supports PURGE and BAN requests as well as surrogate keys (cache tags) using 
 * [Varnish](http://varnish-cache.org/), obviously. Although as it doesn't use any specific varnish APIs and uses plain 
     HTTP, it can probably be configured for other proxies as well. 
 * VCL has to be modified to support purging, banning and distinguishing the two different xkey purging methods 
-    supported by varnish-broadcast. See VCL example below.
+    supported by varnish-towncrier. See VCL example below.
 
 ## Agent
 
 ### Configuration
 
-The agent configuration is done using a YAML file (see [varnish-broadcast.yml.dist]([varnish-broadcast.yml.dist])), default location is
-*/etc/varnish-broadcast.yml*.
+The agent configuration is done using a YAML file (see [varnish-towncrier.yml.dist]([varnish-towncrier.yml.dist])), default location is
+*/etc/varnish-towncrier.yml*.
 
 **redis** section:
 
@@ -69,26 +69,26 @@ endpoint:
 Distribute cache invalidation requests to a fleet of varnish instances.
 
 Usage:
-  varnish-broadcast [command]
+  varnish-towncrier [command]
 
 Available Commands:
   ban         Issue ban request to all registered instances
   help        Help about any command
   listen      Listen for incoming invalidation requests
   purge       Issue purge request to all registered instances
-  version     Print the version number of varnish-broadcast
+  version     Print the version number of varnish-towncrier
   xkey        Invalidate selected surrogate keys on all registered instances
 
 Flags:
-  -c, --config string   config file (default is /etc/varnish-broadcast.yml)
-  -h, --help            help for varnish-broadcast
+  -c, --config string   config file (default is /etc/varnish-towncrier.yml)
+  -h, --help            help for varnish-towncrier
 
-Use "varnish-broadcast [command] --help" for more information about a command.
+Use "varnish-towncrier [command] --help" for more information about a command.
 ```
 
 Example:
 ```
-$ varnish-broadcast -c varnish-broadcast.yml listen 
+$ varnish-towncrier -c varnish-towncrier.yml listen
 2017/12/14 01:09:14 Connecting to redis...
 2017/12/14 01:09:14 Connected to redis://127.0.0.1:6379
 2017/12/14 01:09:14 subscribe: varnish.purge (1)
@@ -121,10 +121,10 @@ Example:
 }
 ```
 
-Using _varnish-broadcast_:
+Using _varnish-towncrier_:
 
 ```
-$ varnish-broadcast -c config.yml xkey --host www.example.org still flying
+$ varnish-towncrier -c config.yml xkey --host www.example.org still flying
 ```
 
 Using _redis-cli_:
@@ -152,7 +152,7 @@ $message = json_encode([
 $client->publish('varnish.purge', $message);
 ```
 
-Using PHP, [Predis](https://github.com/nrk/predis) & [varnish-broadcast-php](https://github.com/emgag/varnish-broadcast-php):
+Using PHP, [Predis](https://github.com/nrk/predis) & [varnish-towncrier-php](https://github.com/emgag/varnish-towncrier-php):
 
 ```PHP
 $client = new Predis\Client([
@@ -161,7 +161,7 @@ $client = new Predis\Client([
     'port'   => '6379'
 ]);
 
-$vb = new VarnishBroadcast($client);
+$vb = new VarnishTowncrier($client);
 $vb->xkey('example.org', ['still', 'flying']);
 ```
 
@@ -254,15 +254,15 @@ sub vcl_deliver {
 On Linux:
 
 ```
-$ mkdir varnish-broadcast && cd varnish-broadcast
+$ mkdir varnish-towncrier && cd varnish-towncrier
 $ export GOPATH=$PWD
-$ go get -d github.com/emgag/varnish-broadcast
-$ cd src/github.com/emgag/varnish-broadcast
+$ go get -d github.com/emgag/varnish-towncrier
+$ cd src/github.com/emgag/varnish-towncrier
 $ make install
 ```
 
-will download the source and builds binary called _varnish-broadcast_ in $GOPATH/bin.
+will download the source and builds binary called _varnish-towncrier_ in $GOPATH/bin.
 
 ## License
 
-varnish-broadcast is licensed under the [MIT License](http://opensource.org/licenses/MIT).
+varnish-towncrier is licensed under the [MIT License](http://opensource.org/licenses/MIT).
