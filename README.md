@@ -6,8 +6,7 @@
 **WORK IN PROGRESS**: more or less feature complete, but not used in production yet.
 
 **varnish-towncrier** is designed to distribute cache invalidation requests to a fleet of
-[varnish](http://varnish-cache.org/) instances running in an dynamic environment (e.g. AWS Auto Scaling, Azure
-Autoscale). The agent daemon is listening for PURGE and BAN requests on a [Redis
+[varnish](http://varnish-cache.org/) instances. The agent daemon is listening for PURGE and BAN requests on a [Redis
 Pub/Sub](https://redis.io/topics/pubsub) channel and forwards incoming cache invalidation requests to its local varnish
 instance. It's the successor of [varnish-cache-reaper](https://github.com/emgag/varnish-cache-reaper), which is also
 used to fan out invalidation requests to multiple varnish instances, though its host list is static while with
