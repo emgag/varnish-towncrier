@@ -160,8 +160,8 @@ $client = new Predis\Client([
     'port'   => '6379'
 ]);
 
-$vb = new VarnishTowncrier($client);
-$vb->xkey('example.org', ['still', 'flying']);
+$vt = new VarnishTowncrier($client);
+$vt->xkey('example.org', ['still', 'flying']);
 ```
 
 ## VCL example
@@ -179,7 +179,7 @@ import xkey;
 # - who is allowed to issue PURGE and BAN requests
 # 
 acl purgers {
-    "localhost";
+    "127.0.0.1";
 }
 
 sub vcl_recv {
