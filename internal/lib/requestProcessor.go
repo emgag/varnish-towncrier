@@ -97,8 +97,8 @@ func (rp *RequestProcessor) Send(req *Request) error {
 			Header string
 			Status string
 		}{
-			"xkey":      {rp.Config.Endpoint.SoftXkeyHeader, "Purging"},
-			"xkey.soft": {rp.Config.Endpoint.XkeyHeader, "Soft-Purging"},
+			"xkey":      {rp.Config.Endpoint.XkeyHeader, "Purging"},
+			"xkey.soft": {rp.Config.Endpoint.SoftXkeyHeader, "Soft-Purging"},
 		}
 
 		for _, t := range req.Value {
