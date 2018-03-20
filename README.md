@@ -216,8 +216,8 @@ sub vcl_recv {
         
         } else if (req.http.x-ban-url) {
             ban(
-                "obj.http.host == " + req.http.host + " && " +
-                "obj.http.url ~ " + req.http.x-ban-url
+                "obj.http.x-host == " + req.http.host + " && " +
+                "obj.http.x-url ~ " + req.http.x-ban-url
             );
             
             return(synth(200, "Banned URL"));
@@ -235,8 +235,9 @@ sub vcl_backend_response {
     [...]
 
     # be friendly to ban lurker
-    set beresp.http.url = bereq.url;
-    
+    set beresp.http.x-url = bereq.url;
+    set beresp.http.x-host = bereq.http.host;
+
     [...]
 }
 
@@ -244,7 +245,8 @@ sub vcl_deliver {
     [...]
     
     # remove some variables we used before
-    unset resp.http.url;
+    unset resp.http.x-url;
+    unset resp.http.x-host;
     unset resp.http.xkey;
     
     [...]
