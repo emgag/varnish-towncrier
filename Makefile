@@ -39,7 +39,7 @@ run: build
 clean:
 	-@rm ${OUT}
 
-docker: build
+docker: 
 	docker build \
 		-t emgag/varnish-towncrier:${VERSION} \
 		-t emgag/varnish-towncrier:latest\
