@@ -6,8 +6,6 @@
 [![Image Layers](https://images.microbadger.com/badges/image/emgag/varnish-towncrier.svg)](https://microbadger.com/images/emgag/varnish-towncrier "Get your own image badge on microbadger.com")
 [![Latest Version](https://images.microbadger.com/badges/version/emgag/varnish-towncrier.svg)](https://microbadger.com/images/emgag/varnish-towncrier "Get your own version badge on microbadger.com")
 
-**WORK IN PROGRESS**: more or less feature complete, but not used in production yet.
-
 **varnish-towncrier** is designed to distribute cache invalidation requests to a fleet of
 [varnish](http://varnish-cache.org/) instances. The agent daemon is listening for PURGE and BAN requests on a [Redis
 Pub/Sub](https://redis.io/topics/pubsub) channel and forwards incoming cache invalidation requests to its local varnish
@@ -95,6 +93,24 @@ $ varnish-towncrier -c varnish-towncrier.yml listen
 2017/12/14 01:09:14 Connected to redis://127.0.0.1:6379
 2017/12/14 01:09:14 subscribe: varnish.purge (1)
 [...]
+```
+
+## Docker 
+
+varnish-towncrier is packaged for docker with image [emgag/varnish-towncrier](https://hub.docker.com/r/emgag/varnish-towncrier)
+and can be configured either by copying a config file to the root or by supplying environment variables.
+
+Example using baked in config file:
+
+``` 
+FROM emgag/varnish-towncrier
+COPY varnish-towncrier.yml /varnish-towncrier.yml
+```
+
+### Run
+
+```
+docker run emgag/varnish-towncrier:latest listen
 ```
 
 ## Invalidation request API
@@ -262,6 +278,7 @@ $ mkdir varnish-towncrier && cd varnish-towncrier
 $ export GOPATH=$PWD
 $ go get -d github.com/emgag/varnish-towncrier
 $ cd src/github.com/emgag/varnish-towncrier
+$ dep ensure -vendor-only
 $ make install
 ```
 
