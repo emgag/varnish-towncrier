@@ -1,0 +1,15 @@
+builds:
+  - binary: varnish-towncrier
+    ldflags:
+      - -s -w -X github.com/emgag/varnish-towncrier/internal/lib/version.Version={{.Version}} -X github.com/emgag/varnish-towncrier/internal/lib/version.Commit={{.Commit}} -X github.com/emgag/varnish-towncrier/internal/lib/version.Date={{.Date}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+archive:
+  format: tar.gz
+  files:
+    - LICENSE
+    - README.md

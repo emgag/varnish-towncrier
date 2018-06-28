@@ -2,8 +2,10 @@ language: go
 
 go:
  - "1.x"
- - "1.9"
  - "1.10"
- - master
+
+install:
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+  - dep ensure
 
 script: make test

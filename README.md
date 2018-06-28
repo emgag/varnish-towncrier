@@ -32,24 +32,24 @@ It supports PURGE and BAN requests as well as surrogate keys (cache tags) using 
 
 ### Configuration
 
-The agent configuration is done using a YAML file (see [varnish-towncrier.yml.dist]([varnish-towncrier.yml.dist])), default location is
-*/etc/varnish-towncrier.yml*.
+The agent configuration is done using either a YAML file (see [varnish-towncrier.yml.dist]([varnish-towncrier.yml.dist])), default location is
+*/etc/varnish-towncrier.yml* or through environment variables.
 
 **redis** section:
 
-* uri: redis host to connect to. Use redis:// for unencrypted, rediss:// for an encrypted connection.
-* password: provide password if the connection needs to be authenticated.
-* subscribe: list of pubsub channels the agent will subscribe to. 
+* uri (*VT_REDIS_URI*): redis host to connect to. Use redis:// for unencrypted, rediss:// for an encrypted connection.
+* password (*VT_REDIS_PASSWORD*): provide password if the connection needs to be authenticated.
+* subscribe (*VT_REDIS_SUBSCRIBE*): list of pubsub channels the agent will subscribe to. When used within an environment variable, a space separated string is used to list multiple values.
 
 **endpoint** section:
 
-* uri: the HTTP endpoint of the varnish instance. 
-* xkeyheader: The header used to supply list of keys to purge using *xkey.purge()* 
-* softxkeyheader: The header used to supply list of keys to purge using *xkey.softpurge()*
-* banheader: The header used to supply the expression for *ban()*
-* banurlheader: The header used to supply the pattern for an URL ban 
+* uri (*VT_ENDPOINT_URI*): the HTTP endpoint of the varnish instance. 
+* xkeyheader (*VT_ENDPOINT_XKEYHEADER*): The header used to supply list of keys to purge using *xkey.purge()*. 
+* softxkeyheader (*VT_ENDPOINT_SOFTXKEYHEADER*): The header used to supply list of keys to purge using *xkey.softpurge()*.
+* banheader (*VT_ENDPOINT_BANHEADER*): The header used to supply the expression for *ban()*.
+* banurlheader (*VT_ENDPOINT_BANURLHEADER*): The header used to supply the pattern for an URL ban. 
  
-Example:
+Example (default values):
 
 ```YAML
 redis:

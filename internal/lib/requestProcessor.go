@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/emgag/varnish-towncrier/internal/lib/version"
 )
 
 // RequestProcessor converts an incoming pubsub message on redis to a purge request to be sent to varnish
@@ -39,7 +41,7 @@ func (rp *RequestProcessor) Send(req *Request) error {
 	httpReq.Method = "PURGE"
 	httpReq.Host = req.Host
 	httpReq.Header = make(http.Header)
-	httpReq.Header.Set("User-Agent", "varnish-towncrier/"+Version)
+	httpReq.Header.Set("User-Agent", "varnish-towncrier/"+ version.Version)
 	httpReq.URL = targetURL
 
 	client := &http.Client{

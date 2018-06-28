@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"log"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -49,15 +50,18 @@ func initConfig() {
 		viper.AddConfigPath(".")
 	}
 
-	viper.SetEnvPrefix("vb")
+	viper.SetEnvPrefix("vt")
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.SetTypeByDefaultValue(true)
 	viper.AutomaticEnv()
 
 	// if a config file is found, read it in.
 	err := viper.ReadInConfig()
 
 	if err != nil {
-		log.Fatal("Could not open config file.")
+		log.Printf("Could not open config file: %v", err)
 	}
+
 }
 
 func clientFlags(cmd *cobra.Command) {
