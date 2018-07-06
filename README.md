@@ -113,6 +113,68 @@ COPY varnish-towncrier.yml /varnish-towncrier.yml
 docker run emgag/varnish-towncrier:latest listen
 ```
 
+### Kubernetes
+
+varnish-towncrier can be run alongside a varnish container (like [emgag/varnish](https://github.com/emgag/docker-varnish)) 
+in a pod to handle cache resets, e.g.
+
+```
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: varnish-deployment
+spec:
+  selector:
+    matchLabels:
+      app: varnish
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: varnish
+    spec:
+      containers:
+      - name: varnish
+        image: emgag/varnish:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: VARNISH_STORAGE
+          value: "malloc,512m"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/varnish          
+      - name: varnish-towncrier
+        image: emgag/varnish-towncrier:latest
+        args:
+        - listen
+        env:
+        - name: VT_REDIS_URI
+          value: redis://redis-service
+        - name: VT_ENDPOINT_URI
+          value: http://127.0.0.1:80/
+      volumes:
+      - name: config-volume
+        configMap:
+          name: varnish-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: varnish-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+  selector:
+    app: varnish
+```
+
+
 ## Invalidation request API
 
 Invalidation requests can be sent by publishing to a [Redis Pub/Sub](https://redis.io/topics/pubsub) channel.
@@ -185,9 +247,10 @@ $vt->xkey('example.org', ['still', 'flying']);
 
 ## VCL example
 
-### Varnish 4.1 / 5.x
+### Varnish 4.1 / 5.x / 6.x
 
-Varnish documentation on [purging and banning in varnish 4](https://www.varnish-cache.org/docs/4.1/users-guide/purging.html), or in [varnish 5.2](https://www.varnish-cache.org/docs/5.2/users-guide/purging.html) 
+Varnish documentation on [purging and banning in varnish 4](https://www.varnish-cache.org/docs/4.1/users-guide/purging.html), 
+in [varnish 5.2](https://www.varnish-cache.org/docs/5.2/users-guide/purging.html) or [varnish 6.0](https://www.varnish-cache.org/docs/5.2/users-guide/purging.html) 
 
 ```VCL
 [...]
