@@ -250,7 +250,7 @@ $vt->xkey('example.org', ['still', 'flying']);
 ### Varnish 4.1 / 5.x / 6.x
 
 Varnish documentation on [purging and banning in varnish 4](https://www.varnish-cache.org/docs/4.1/users-guide/purging.html), 
-in [varnish 5.2](https://www.varnish-cache.org/docs/5.2/users-guide/purging.html) or [varnish 6.0](https://www.varnish-cache.org/docs/5.2/users-guide/purging.html) 
+in [varnish 5.2](https://www.varnish-cache.org/docs/5.2/users-guide/purging.html) or [varnish 6.0](https://www.varnish-cache.org/docs/6.0/users-guide/purging.html) 
 
 ```VCL
 [...]
