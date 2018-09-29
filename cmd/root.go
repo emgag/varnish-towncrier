@@ -60,6 +60,7 @@ func initConfig() {
 
 	if err != nil {
 		log.Printf("Could not open config file: %v", err)
+		log.Printf("Using environment and default config only")
 	}
 
 }
