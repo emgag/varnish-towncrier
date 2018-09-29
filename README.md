@@ -25,6 +25,7 @@ It supports PURGE and BAN requests as well as surrogate keys (cache tags) using 
     HTTP, it can probably be configured for other proxies as well. 
 * VCL has to be modified to support purging, banning and distinguishing the two different xkey purging methods 
     supported by varnish-towncrier. See VCL example below.
+* Go >=1.11 for building.      
 
 ## Agent
 
@@ -341,7 +342,6 @@ $ mkdir varnish-towncrier && cd varnish-towncrier
 $ export GOPATH=$PWD
 $ go get -d github.com/emgag/varnish-towncrier
 $ cd src/github.com/emgag/varnish-towncrier
-$ dep ensure -vendor-only
 $ make install
 ```
 
