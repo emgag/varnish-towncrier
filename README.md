@@ -185,7 +185,8 @@ Invalidation requests can be sent by publishing to a [Redis Pub/Sub](https://red
 The publish message payload consists of a JSON object with following properties:
 
 * **command**: string. Required. Either _ban_, _ban.url_, _purge_, _xkey_ or _xkey.soft_.
-* **host**: string. Required. The _Host_ header used in the PURGE/BAN request to varnish.
+* **host**: string. Optional. The _Host_ header used in the PURGE/BAN request to varnish. 
+If omitted, the host is derived from the local endpoint's URL.  
 * **value**: string[]. Required. Meaning depends on the command.
 _ban_: List of [ban() expressions](https://varnish-cache.org/docs/5.2/reference/vcl.html#vcl-7-ban), 
 _ban.url_: List of regular expressions matching the path portion of the URL to be banned,

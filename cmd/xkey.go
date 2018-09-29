@@ -16,7 +16,7 @@ func init() {
 }
 
 var xkeyCmd = &cobra.Command{
-	Use:       "xkey [flags] --host http.host key [key...]",
+	Use:       "xkey [flags] key [key...]",
 	Short:     "Invalidate selected surrogate keys on all registered instances",
 	Args:      cobra.MinimumNArgs(1),
 	ValidArgs: []string{"key"},

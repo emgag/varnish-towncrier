@@ -15,7 +15,7 @@ func init() {
 }
 
 var purgeCommand = &cobra.Command{
-	Use:       "purge [flags] --host http.host path [path...]",
+	Use:       "purge [flags] path [path...]",
 	Short:     "Issue purge request to all registered instances",
 	Args:      cobra.MinimumNArgs(1),
 	ValidArgs: []string{"path"},

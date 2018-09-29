@@ -10,13 +10,17 @@ import (
 
 func init() {
 	clientFlags(banCmd)
-	banCmd.Flags().Bool("url", false, "Submit an URL ban (regular expression pattern matched on path instead of VCL expression)")
+	banCmd.Flags().Bool(
+		"url",
+		false,
+		"Submit an URL ban (regular expression pattern matched on path instead of VCL expression)",
+	)
 
 	rootCmd.AddCommand(banCmd)
 }
 
 var banCmd = &cobra.Command{
-	Use:       "ban [flags] --host http.host expression [expression...]",
+	Use:       "ban [flags] expression [expression...]",
 	Short:     "Issue ban request to all registered instances",
 	Args:      cobra.MinimumNArgs(1),
 	ValidArgs: []string{"expression"},

@@ -66,8 +66,10 @@ func initConfig() {
 }
 
 func clientFlags(cmd *cobra.Command) {
-	cmd.Flags().String("host", "", "HTTP Host (required)")
-	cmd.Flags().String("channel", "", "Pubsub channel to publish message to (defaults to all configured channels)")
-
-	cmd.MarkFlagRequired("host")
+	cmd.Flags().String("host", "", "HTTP Host")
+	cmd.Flags().String(
+		"channel",
+		"",
+		"Pubsub channel to publish message to (defaults to all configured channels)",
+	)
 }

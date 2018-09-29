@@ -39,9 +39,15 @@ func (rp *RequestProcessor) Send(req *Request) error {
 
 	httpReq := &http.Request{}
 	httpReq.Method = "PURGE"
-	httpReq.Host = req.Host
+
+	if req.Host != "" {
+		httpReq.Host = req.Host
+	} else {
+		httpReq.Host = targetURL.Host
+	}
+
 	httpReq.Header = make(http.Header)
-	httpReq.Header.Set("User-Agent", "varnish-towncrier/"+ version.Version)
+	httpReq.Header.Set("User-Agent", "varnish-towncrier/"+version.Version)
 	httpReq.URL = targetURL
 
 	client := &http.Client{
@@ -55,7 +61,7 @@ func (rp *RequestProcessor) Send(req *Request) error {
 		for _, path := range req.Value {
 			targetURL.Path = path
 
-			log.Printf("Purging path %s from %s", path, req.Host)
+			log.Printf("Purging path %s from %s", path, httpReq.Host)
 
 			_, err = client.Do(httpReq)
 
@@ -82,7 +88,7 @@ func (rp *RequestProcessor) Send(req *Request) error {
 		for _, expression := range req.Value {
 			httpReq.Header.Set(headerMap[req.Command].Header, expression)
 
-			log.Printf("%s %s from %s", headerMap[req.Command].Status, expression, req.Host)
+			log.Printf("%s %s from %s", headerMap[req.Command].Status, expression, httpReq.Host)
 
 			_, err = client.Do(httpReq)
 
@@ -107,7 +113,13 @@ func (rp *RequestProcessor) Send(req *Request) error {
 			httpReq.Header.Add(headerMap[req.Command].Header, t)
 		}
 
-		log.Printf("%s tags %s from %s", headerMap[req.Command].Status, strings.Join(req.Value, ", "), req.Host)
+		log.Printf(
+			"%s tags %s from %s",
+			headerMap[req.Command].Status,
+			strings.Join(req.Value, ", "),
+			httpReq.Host,
+		)
+
 		_, err = client.Do(httpReq)
 
 		if err != nil {

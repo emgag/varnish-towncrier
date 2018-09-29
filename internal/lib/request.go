@@ -16,7 +16,7 @@ var validCommands = map[string]bool{
 
 // Request contains the purge message received from or sent to redis
 type Request struct {
-	Host    string   `json:"host"`
+	Host    string   `json:"host,omitempty"`
 	Command string   `json:"command"`
 	Value   []string `json:"value"`
 }
@@ -29,10 +29,6 @@ func (r *Request) Validate() (bool, error) {
 		messages = append(messages, "command: missing")
 	} else if !validCommands[r.Command] {
 		messages = append(messages, "Unknown command: "+r.Command)
-	}
-
-	if r.Host == "" {
-		messages = append(messages, "host: missing")
 	}
 
 	if len(r.Value) == 0 {
