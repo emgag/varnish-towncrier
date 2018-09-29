@@ -3,7 +3,7 @@ package lib
 import (
 	"time"
 
-	"github.com/garyburd/redigo/redis"
+	"github.com/gomodule/redigo/redis"
 )
 
 // NewRedisConn creates new redis connection

@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/garyburd/redigo/redis"
+	"github.com/gomodule/redigo/redis"
 )
 
 // Listener is used to connect to redis pubsub and listen for incoming requests
