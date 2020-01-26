@@ -1,6 +1,5 @@
 # varnish-towncrier
 
-[![Build Status](https://travis-ci.org/emgag/varnish-towncrier.svg?branch=master)](https://travis-ci.org/emgag/varnish-towncrier)
 [![Go Report Card](https://goreportcard.com/badge/github.com/emgag/varnish-towncrier)](https://goreportcard.com/report/github.com/emgag/varnish-towncrier)
 [![Docker Pulls](https://img.shields.io/docker/pulls/emgag/varnish-towncrier.svg)](https://hub.docker.com/r/emgag/varnish-towncrier)
 [![Image Layers](https://images.microbadger.com/badges/image/emgag/varnish-towncrier.svg)](https://microbadger.com/images/emgag/varnish-towncrier "Get your own image badge on microbadger.com")
