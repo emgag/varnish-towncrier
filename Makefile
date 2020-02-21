@@ -1,4 +1,4 @@
-.PHONY: build install snapshot dist test vet lint fmt run clean docker
+.PHONY: build install snapshot dist test vet lint fmt run clean 
 OUT := varnish-towncrier
 PKG := github.com/emgag/varnish-towncrier
 VERSION := $(shell git describe --always --dirty --tags)
@@ -38,13 +38,3 @@ run: build
 
 clean:
 	-@rm ${OUT}
-
-docker: 
-	docker build \
-		-t emgag/varnish-towncrier:${VERSION} \
-		-t emgag/varnish-towncrier:latest\
-		.
-	docker push emgag/varnish-towncrier:${VERSION}
-	docker push emgag/varnish-towncrier:latest
-
-
