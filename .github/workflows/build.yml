@@ -1,24 +1,21 @@
-name: Go
-on: [push]
-jobs:
+name: build
 
-  build:
-    name: Build
+on:
+  pull_request:
+  push:
+
+jobs:
+  test:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Set up Go 1.13
-      uses: actions/setup-go@v1
-      with:
-        go-version: 1.13
-      id: go
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13.x
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
+      - name: Run tests
+        run: go test -v ./...
 
-    - name: Get dependencies
-      run: |
-        go get -v -t -d ./...
-
-    - name: Build
-      run: go build -v .
