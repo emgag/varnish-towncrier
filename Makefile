@@ -1,9 +1,8 @@
-.PHONY: build install snapshot dist test vet lint fmt run clean 
+.PHONY: build install snapshot dist test vet lint fmt run clean
 OUT := varnish-towncrier
 PKG := github.com/emgag/varnish-towncrier
-VERSION := $(shell git describe --always --dirty --tags)
-PKG_LIST := $(shell go list ${PKG}/... | grep -v /vendor/)
-GO_FILES := $(shell find . -name '*.go' | grep -v /vendor/)
+PKG_LIST := $(shell go list ${PKG}/...)
+GO_FILES := $(shell find . -name '*.go')
 
 all: build
 
