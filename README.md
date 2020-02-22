@@ -339,14 +339,10 @@ sub vcl_deliver {
 On Linux:
 
 ```
-$ mkdir varnish-towncrier && cd varnish-towncrier
-$ export GOPATH=$PWD
-$ go get -d github.com/emgag/varnish-towncrier
-$ cd src/github.com/emgag/varnish-towncrier
-$ make install
+$ git clone github.com/emgag/varnish-towncrier 
+$ cd varnish-towncrier
+$ make 
 ```
-
-will download the source and builds binary called _varnish-towncrier_ in $GOPATH/bin.
 
 ## License
 
