@@ -3,8 +3,9 @@
 ![build](https://github.com/emgag/varnish-towncrier/workflows/build/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/emgag/varnish-towncrier)](https://goreportcard.com/report/github.com/emgag/varnish-towncrier)
 [![Docker Pulls](https://img.shields.io/docker/pulls/emgag/varnish-towncrier.svg)](https://hub.docker.com/r/emgag/varnish-towncrier)
-[![Image Layers](https://images.microbadger.com/badges/image/emgag/varnish-towncrier.svg)](https://microbadger.com/images/emgag/varnish-towncrier "Get your own image badge on microbadger.com")
-[![Latest Version](https://images.microbadger.com/badges/version/emgag/varnish-towncrier.svg)](https://microbadger.com/images/emgag/varnish-towncrier "Get your own version badge on microbadger.com")
+[![Docker Image](https://img.shields.io/docker/image-size/emgag/varnish-towncrier?sort=semver)](https://hub.docker.com/r/emgag/varnish-towncrier)
+![License](https://img.shields.io/github/license/emgag/varnish-towncrier)
+
 
 **varnish-towncrier** is designed to distribute cache invalidation requests to a fleet of
 [varnish](http://varnish-cache.org/) instances. The agent daemon is listening for PURGE and BAN requests on a [Redis
