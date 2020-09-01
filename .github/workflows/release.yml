@@ -33,7 +33,7 @@ jobs:
         uses: azure/docker-login@v1
         with:
           login-server: docker.pkg.github.com
-          username: ${{ GITHUB_ACTOR }}
+          username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run GoReleaser
