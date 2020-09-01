@@ -27,6 +27,8 @@ dockers:
     image_templates:
       - "emgag/varnish-towncrier:latest"
       - "emgag/varnish-towncrier:{{ .Tag }}"
+      - "docker.pkg.github.com/emgag/varnish-towncrier/varnish-towncrier:latest"
+      - "docker.pkg.github.com/emgag/varnish-towncrier/varnish-towncrier:{{ .Tag }}"
     dockerfile: Dockerfile
     build_flag_templates:
       - "--pull"
