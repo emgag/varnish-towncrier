@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*.*.*'
 
+env:
+  GHCR_USER: emgag-service
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
@@ -32,9 +35,9 @@ jobs:
       - name: Login to github docker registry
         uses: azure/docker-login@v1
         with:
-          login-server: docker.pkg.github.com
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          login-server: ghcr.io
+          username: ${{ env.GHCR_USER }}
+          password: ${{ secrets.CR_PAT }}
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v1

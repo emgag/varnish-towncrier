@@ -2,8 +2,6 @@
 
 ![build](https://github.com/emgag/varnish-towncrier/workflows/build/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/emgag/varnish-towncrier)](https://goreportcard.com/report/github.com/emgag/varnish-towncrier)
-[![Docker Pulls](https://img.shields.io/docker/pulls/emgag/varnish-towncrier.svg)](https://hub.docker.com/r/emgag/varnish-towncrier)
-[![Docker Image](https://img.shields.io/docker/image-size/emgag/varnish-towncrier?sort=semver)](https://hub.docker.com/r/emgag/varnish-towncrier)
 ![License](https://img.shields.io/github/license/emgag/varnish-towncrier)
 
 
@@ -99,13 +97,17 @@ $ varnish-towncrier -c varnish-towncrier.yml listen
 
 ## Docker 
 
-varnish-towncrier is packaged for docker with image [emgag/varnish-towncrier](https://hub.docker.com/r/emgag/varnish-towncrier)
+varnish-towncrier is packaged for docker with the image
+ 
+* Github Container Registry: [ghcr.io/emgag/varnish-towncrier](https://github.com/orgs/emgag/packages/container/varnish-towncrier)
+* Dockerhub: [emgag/varnish-towncrier](https://hub.docker.com/r/emgag/varnish-towncrier)
+
 and can be configured either by copying a config file to the root or by supplying environment variables.
 
 Example using baked in config file:
 
 ``` 
-FROM emgag/varnish-towncrier
+FROM ghcr.io/emgag/varnish-towncrier
 COPY varnish-towncrier.yml /varnish-towncrier.yml
 ```
 
@@ -117,7 +119,7 @@ docker run emgag/varnish-towncrier:latest listen
 
 ### Kubernetes
 
-varnish-towncrier can be run alongside a varnish container (like [emgag/varnish](https://github.com/emgag/docker-varnish)) 
+varnish-towncrier can be run alongside a varnish container (like [ghcr.io/emgag/varnish](https://github.com/orgs/emgag/packages/container/varnish)) 
 in a pod to handle cache resets, e.g.
 
 ```
@@ -139,7 +141,7 @@ spec:
     spec:
       containers:
       - name: varnish
-        image: emgag/varnish:latest
+        image: ghcr.io/emgag/varnish:6.4.0
         ports:
         - containerPort: 80
         env:
@@ -149,7 +151,7 @@ spec:
         - name: config-volume
           mountPath: /etc/varnish          
       - name: varnish-towncrier
-        image: emgag/varnish-towncrier:latest
+        image: ghcr.io/emgag/varnish-towncrier:latest
         args:
         - listen
         env:
