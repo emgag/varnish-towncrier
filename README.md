@@ -1,6 +1,7 @@
 # varnish-towncrier
 
 ![build](https://github.com/emgag/varnish-towncrier/workflows/build/badge.svg)
+![release](https://github.com/emgag/varnish-towncrier/workflows/release/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/emgag/varnish-towncrier)](https://goreportcard.com/report/github.com/emgag/varnish-towncrier)
 ![License](https://img.shields.io/github/license/emgag/varnish-towncrier)
 
