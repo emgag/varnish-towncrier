@@ -13,16 +13,15 @@ builds:
       - amd64
 archives:
   - files:
-    - LICENSE
-    - README.md
-    - varnish-towncrier.yml.dist
+      - LICENSE
+      - README.md
+      - varnish-towncrier.yml.dist
 checksum:
   name_template: 'checksums.txt'
 dockers:
-  -
-    goos: linux
+  - goos: linux
     goarch: amd64
-    binaries:
+    ids:
       - varnish-towncrier
     image_templates:
       - "emgag/varnish-towncrier:latest"
