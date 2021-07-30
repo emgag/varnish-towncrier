@@ -8,9 +8,11 @@ builds:
     ldflags:
       - -s -w -X github.com/emgag/varnish-towncrier/internal/lib/version.Version={{.Version}} -X github.com/emgag/varnish-towncrier/internal/lib/version.Commit={{.Commit}} -X github.com/emgag/varnish-towncrier/internal/lib/version.Date={{.Date}}
     goos:
+      - darwin
       - linux
     goarch:
       - amd64
+      - arm64
 archives:
   - files:
       - LICENSE
