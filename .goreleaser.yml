@@ -43,9 +43,8 @@ dockers:
     goarch: arm64
     ids:
       - varnish-towncrier
-
 docker_manifests:
-  - name_template: emgag/varnish-towncrier:{{ .Tag }}
+  - name_template: ghcr.io/emgag/varnish-towncrier:{{ .Tag }}
     image_templates:
       - "ghcr.io/emgag/varnish-towncrier:{{ .Tag }}-amd64"
       - "ghcr.io/emgag/varnish-towncrier:{{ .Tag }}-arm64"
