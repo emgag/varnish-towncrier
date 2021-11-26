@@ -5,49 +5,50 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/emgag/varnish-towncrier)](https://goreportcard.com/report/github.com/emgag/varnish-towncrier)
 ![License](https://img.shields.io/github/license/emgag/varnish-towncrier)
 
-
 **varnish-towncrier** is designed to distribute cache invalidation requests to a fleet of
-[varnish](http://varnish-cache.org/) instances. The agent daemon is listening for PURGE and BAN requests on a [Redis
-Pub/Sub](https://redis.io/topics/pubsub) channel and forwards incoming cache invalidation requests to its local varnish
-instance. It's the successor of [varnish-cache-reaper](https://github.com/emgag/varnish-cache-reaper), which is also
-used to fan out invalidation requests to multiple varnish instances, though its host list is static while with
+[varnish](http://varnish-cache.org/) instances. The agent daemon is listening for PURGE and BAN requests on
+a [Redis Pub/Sub](https://redis.io/topics/pubsub) channel and forwards incoming cache invalidation requests to its local
+varnish instance. It's the successor of [varnish-cache-reaper](https://github.com/emgag/varnish-cache-reaper), which is
+also used to fan out invalidation requests to multiple varnish instances, though its host list is static while with
 varnish-towncrier, each varnish instance registers itself automatically.
 
-It supports PURGE and BAN requests as well as surrogate keys (cache tags) using the 
+It supports PURGE and BAN requests as well as surrogate keys (cache tags) using the
 [xkey module](https://github.com/varnish/varnish-modules/blob/master/docs/vmod_xkey.rst), formerly known as Hashtwo.
 
 ## Requirements
 
-* [Redis](https://redis.io) service, accessible from both the applications
-    issuing invalidation requests as well as the varnish instances
-    running the agent.
-* [Varnish](http://varnish-cache.org/), obviously. Although as it doesn't use any specific varnish APIs and uses plain 
-    HTTP, it can probably be configured for other proxies as well. 
-* VCL has to be modified to support purging, banning and distinguishing the two different xkey purging methods 
-    supported by varnish-towncrier. See VCL example below.
-* Go >=1.15 for building.      
+* [Redis](https://redis.io) service, accessible from both the applications issuing invalidation requests as well as the
+  varnish instances running the agent.
+* [Varnish](http://varnish-cache.org/), obviously. Although as it doesn't use any specific varnish APIs and uses plain
+  HTTP, it can probably be configured for other proxies as well.
+* VCL has to be modified to support purging, banning and distinguishing the two different xkey purging methods supported
+  by varnish-towncrier. See VCL example below.
+* Go >=1.17 for building.
 
 ## Agent
 
 ### Configuration
 
-The agent configuration is done using either a YAML file (see [varnish-towncrier.yml.dist]([varnish-towncrier.yml.dist])), default location is
+The agent configuration is done using either a YAML file (
+see [varnish-towncrier.yml.dist]([varnish-towncrier.yml.dist])), default location is
 */etc/varnish-towncrier.yml* or through environment variables.
 
 **redis** section:
 
 * uri (*VT_REDIS_URI*): redis host to connect to. Use redis:// for unencrypted, rediss:// for an encrypted connection.
 * password (*VT_REDIS_PASSWORD*): provide password if the connection needs to be authenticated.
-* subscribe (*VT_REDIS_SUBSCRIBE*): list of pubsub channels the agent will subscribe to. When used within an environment variable, a space separated string is used to list multiple values.
+* subscribe (*VT_REDIS_SUBSCRIBE*): list of pubsub channels the agent will subscribe to. When used within an environment
+  variable, a space separated string is used to list multiple values.
 
 **endpoint** section:
 
-* uri (*VT_ENDPOINT_URI*): the HTTP endpoint of the varnish instance. 
-* xkeyheader (*VT_ENDPOINT_XKEYHEADER*): The header used to supply list of keys to purge using *xkey.purge()*. 
-* softxkeyheader (*VT_ENDPOINT_SOFTXKEYHEADER*): The header used to supply list of keys to purge using *xkey.softpurge()*.
+* uri (*VT_ENDPOINT_URI*): the HTTP endpoint of the varnish instance.
+* xkeyheader (*VT_ENDPOINT_XKEYHEADER*): The header used to supply list of keys to purge using *xkey.purge()*.
+* softxkeyheader (*VT_ENDPOINT_SOFTXKEYHEADER*): The header used to supply list of keys to purge using *
+  xkey.softpurge()*.
 * banheader (*VT_ENDPOINT_BANHEADER*): The header used to supply the expression for *ban()*.
-* banurlheader (*VT_ENDPOINT_BANURLHEADER*): The header used to supply the pattern for an URL ban. 
- 
+* banurlheader (*VT_ENDPOINT_BANURLHEADER*): The header used to supply the pattern for an URL ban.
+
 Example (default values):
 
 ```YAML
@@ -56,7 +57,7 @@ redis:
   password: thepasswordifneeeded
   subscribe:
     - varnish.purge
-endpoint: 
+endpoint:
   uri: http://127.0.0.1:8080/
   xkeyheader: x-xkey
   softxkeyheader: x-xkey-soft
@@ -88,6 +89,7 @@ Use "varnish-towncrier [command] --help" for more information about a command.
 ```
 
 Example:
+
 ```
 $ varnish-towncrier -c varnish-towncrier.yml listen
 2017/12/14 01:09:14 Connecting to redis...
@@ -96,12 +98,11 @@ $ varnish-towncrier -c varnish-towncrier.yml listen
 [...]
 ```
 
-## Docker 
+## Docker
 
 varnish-towncrier is packaged for docker with the image
- 
-* Github Container Registry: [ghcr.io/emgag/varnish-towncrier](https://github.com/orgs/emgag/packages/container/varnish-towncrier)
-* Dockerhub: [emgag/varnish-towncrier](https://hub.docker.com/r/emgag/varnish-towncrier)
+
+[ghcr.io/emgag/varnish-towncrier](https://github.com/orgs/emgag/packages/container/varnish-towncrier)
 
 and can be configured either by copying a config file to the root or by supplying environment variables.
 
@@ -120,7 +121,8 @@ docker run emgag/varnish-towncrier:latest listen
 
 ### Kubernetes
 
-varnish-towncrier can be run alongside a varnish container (like [ghcr.io/emgag/varnish](https://github.com/orgs/emgag/packages/container/varnish)) 
+varnish-towncrier can be run alongside a varnish container (
+like [ghcr.io/emgag/varnish](https://github.com/orgs/emgag/packages/container/varnish))
 in a pod to handle cache resets, e.g.
 
 ```
@@ -179,7 +181,6 @@ spec:
     app: varnish
 ```
 
-
 ## Invalidation request API
 
 Invalidation requests can be sent by publishing to a [Redis Pub/Sub](https://redis.io/topics/pubsub) channel.
@@ -189,21 +190,24 @@ Invalidation requests can be sent by publishing to a [Redis Pub/Sub](https://red
 The publish message payload consists of a JSON object with following properties:
 
 * **command**: string. Required. Either _ban_, _ban.url_, _purge_, _xkey_ or _xkey.soft_.
-* **host**: string. Optional. The _Host_ header used in the PURGE/BAN request to varnish. 
-If omitted, the host is derived from the local endpoint's URL.  
+* **host**: string. Optional. The _Host_ header used in the PURGE/BAN request to varnish. If omitted, the host is
+  derived from the local endpoint's URL.
 * **value**: string[]. Required. Meaning depends on the command.
-_ban_: List of [ban() expressions](https://varnish-cache.org/docs/5.2/reference/vcl.html#vcl-7-ban), 
-_ban.url_: List of regular expressions matching the path portion of the URL to be banned,
-_purge_: The path portion of the URL to be purged,
-_xkey_ and _xkey.soft_: List of keys to (soft-)purge.
+  _ban_: List of [ban() expressions](https://varnish-cache.org/docs/5.2/reference/vcl.html#vcl-7-ban),
+  _ban.url_: List of regular expressions matching the path portion of the URL to be banned,
+  _purge_: The path portion of the URL to be purged,
+  _xkey_ and _xkey.soft_: List of keys to (soft-)purge.
 
 Example:
 
 ```JSON
 {
-   "command" : "xkey",
-   "host" : "www.example.org",
-   "value" : ["still", "flying"]
+  "command": "xkey",
+  "host": "www.example.org",
+  "value": [
+    "still",
+    "flying"
+  ]
 }
 ```
 
@@ -238,7 +242,8 @@ $message = json_encode([
 $client->publish('varnish.purge', $message);
 ```
 
-Using PHP, [Predis](https://github.com/nrk/predis) & [varnish-towncrier-php](https://github.com/emgag/varnish-towncrier-php):
+Using PHP, [Predis](https://github.com/nrk/predis)
+& [varnish-towncrier-php](https://github.com/emgag/varnish-towncrier-php):
 
 ```PHP
 $client = new Predis\Client([
@@ -255,8 +260,10 @@ $vt->xkey('example.org', ['still', 'flying']);
 
 ### Varnish 4.1 / 5.x / 6.x
 
-Varnish documentation on [purging and banning in varnish 4](https://www.varnish-cache.org/docs/4.1/users-guide/purging.html), 
-in [varnish 5.2](https://www.varnish-cache.org/docs/5.2/users-guide/purging.html) or [varnish 6.0](https://www.varnish-cache.org/docs/6.0/users-guide/purging.html) 
+Varnish documentation
+on [purging and banning in varnish 4](https://www.varnish-cache.org/docs/4.1/users-guide/purging.html),
+in [varnish 5.2](https://www.varnish-cache.org/docs/5.2/users-guide/purging.html)
+or [varnish 6.0](https://www.varnish-cache.org/docs/6.0/users-guide/purging.html)
 
 ```VCL
 [...]

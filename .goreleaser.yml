@@ -21,15 +21,36 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 dockers:
-  - goos: linux
+  - dockerfile: Dockerfile
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--pull"
+    image_templates:
+      - "ghcr.io/emgag/varnish-towncrier:{{ .Tag }}-amd64"
+    goos: linux
     goarch: amd64
     ids:
       - varnish-towncrier
-    image_templates:
-      - "emgag/varnish-towncrier:latest"
-      - "emgag/varnish-towncrier:{{ .Tag }}"
-      - "ghcr.io/emgag/varnish-towncrier:latest"
-      - "ghcr.io/emgag/varnish-towncrier:{{ .Tag }}"
-    dockerfile: Dockerfile
+  - dockerfile: Dockerfile
+    use: buildx
     build_flag_templates:
+      - "--platform=linux/arm64"
       - "--pull"
+    image_templates:
+      - "ghcr.io/emgag/varnish-towncrier:{{ .Tag }}-arm64"
+    goos: linux
+    goarch: arm64
+    ids:
+      - varnish-towncrier
+
+docker_manifests:
+  - name_template: emgag/varnish-towncrier:{{ .Tag }}
+    image_templates:
+      - "ghcr.io/emgag/varnish-towncrier:{{ .Tag }}-amd64"
+      - "ghcr.io/emgag/varnish-towncrier:{{ .Tag }}-arm64"
+  - name_template: ghcr.io/emgag/varnish-towncrier:latest
+    image_templates:
+      - "ghcr.io/emgag/varnish-towncrier:{{ .Tag }}-amd64"
+      - "ghcr.io/emgag/varnish-towncrier:{{ .Tag }}-arm64"
+
