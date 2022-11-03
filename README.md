@@ -7,13 +7,14 @@
 
 **varnish-towncrier** is designed to distribute cache invalidation requests to a fleet of
 [varnish](http://varnish-cache.org/) instances. The agent daemon is listening for PURGE and BAN requests on
-a [Redis Pub/Sub](https://redis.io/topics/pubsub) channel and forwards incoming cache invalidation requests to its local
+a [Redis Pub/Sub](https://redis.io/docs/manual/pubsub/) channel and forwards incoming cache invalidation requests to its
+local
 varnish instance. It's the successor of [varnish-cache-reaper](https://github.com/emgag/varnish-cache-reaper), which is
 also used to fan out invalidation requests to multiple varnish instances, though its host list is static while with
 varnish-towncrier, each varnish instance registers itself automatically.
 
 It supports PURGE and BAN requests as well as surrogate keys (cache tags) using the
-[xkey module](https://github.com/varnish/varnish-modules/blob/master/docs/vmod_xkey.rst), formerly known as Hashtwo.
+[xkey module](https://github.com/varnish/varnish-modules/blob/master/src/vmod_xkey.vcc), formerly known as Hashtwo.
 
 ## Requirements
 
@@ -144,7 +145,7 @@ spec:
     spec:
       containers:
       - name: varnish
-        image: ghcr.io/emgag/varnish:6.4.0
+        image: ghcr.io/emgag/varnish:7.2.0
         ports:
         - containerPort: 80
         env:
@@ -183,7 +184,7 @@ spec:
 
 ## Invalidation request API
 
-Invalidation requests can be sent by publishing to a [Redis Pub/Sub](https://redis.io/topics/pubsub) channel.
+Invalidation requests can be sent by publishing to a [Redis Pub/Sub](https://redis.io/docs/manual/pubsub/) channel.
 
 ### Message format
 
@@ -193,7 +194,7 @@ The publish message payload consists of a JSON object with following properties:
 * **host**: string. Optional. The _Host_ header used in the PURGE/BAN request to varnish. If omitted, the host is
   derived from the local endpoint's URL.
 * **value**: string[]. Required. Meaning depends on the command.
-  _ban_: List of [ban() expressions](https://varnish-cache.org/docs/5.2/reference/vcl.html#vcl-7-ban),
+  _ban_: List of [ban() expressions](https://varnish-cache.org/docs/7.2/reference/vmod_std.html#std-ban),
   _ban.url_: List of regular expressions matching the path portion of the URL to be banned,
   _purge_: The path portion of the URL to be purged,
   _xkey_ and _xkey.soft_: List of keys to (soft-)purge.
@@ -258,12 +259,12 @@ $vt->xkey('example.org', ['still', 'flying']);
 
 ## VCL example
 
-### Varnish 4.1 / 5.x / 6.x
+### Varnish 6.x / 7.x
 
 Varnish documentation
-on [purging and banning in varnish 4](https://www.varnish-cache.org/docs/4.1/users-guide/purging.html),
-in [varnish 5.2](https://www.varnish-cache.org/docs/5.2/users-guide/purging.html)
 or [varnish 6.0](https://www.varnish-cache.org/docs/6.0/users-guide/purging.html)
+or [varnish 7.1](https://www.varnish-cache.org/docs/7.1/users-guide/purging.html)
+or [varnish 7.2](https://www.varnish-cache.org/docs/7.2/users-guide/purging.html)
 
 ```VCL
 [...]
