@@ -28,18 +28,22 @@ func (l *Listener) Listen() error {
 			continue
 		}
 
-		defer c.Close()
+		defer func(c redis.Conn) {
+			_ = c.Close()
+		}(c)
 
 		log.Printf("Connected to %s", l.Options.Redis.URI)
 
 		psc := redis.PubSubConn{Conn: c}
-		psc.Subscribe(redis.Args{}.AddFlat(l.Options.Redis.Subscribe)...)
+		_ = psc.Subscribe(redis.Args{}.AddFlat(l.Options.Redis.Subscribe)...)
 
 	Receive:
 		for {
 			switch v := psc.Receive().(type) {
 			case redis.Message:
-				go rp.Process(string(v.Data))
+				go func() {
+					_ = rp.Process(string(v.Data))
+				}()
 			case redis.Subscription:
 				log.Printf("%s: %s (%d)\n", v.Kind, v.Channel, v.Count)
 			case error:
@@ -51,7 +55,7 @@ func (l *Listener) Listen() error {
 				}
 
 				time.Sleep(5 * time.Second)
-				c.Close()
+				_ = c.Close()
 				break Receive
 			}
 		}

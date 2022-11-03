@@ -46,7 +46,7 @@ func (c *Client) Do(channels []string, req Request) error {
 	message, _ := json.Marshal(req)
 
 	for _, channel := range channels {
-		redis.Do("publish", channel, string(message))
+		_, _ = redis.Do("publish", channel, string(message))
 	}
 
 	return nil

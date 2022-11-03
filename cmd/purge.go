@@ -28,7 +28,7 @@ var purgeCommand = &cobra.Command{
 		}
 
 		host, _ := cmd.Flags().GetString("host")
-		channels := []string{}
+		var channels []string
 
 		if publishChannel, _ := cmd.Flags().GetString("channel"); publishChannel != "" {
 			channels = []string{publishChannel}
